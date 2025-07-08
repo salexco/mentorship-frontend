@@ -205,7 +205,8 @@ form .error {
   background: #1e8449;
 }
 
-edit-profile-container {
+/* ✅ Corrected selector below */
+.edit-profile-container {
   max-width: 600px;
   margin: 20px auto;
   padding: 20px;
@@ -244,12 +245,6 @@ edit-profile-container {
   padding: 10px 0;
 }
 
-CSS (index.css)
-Add or ensure these styles exist for consistency:
-
-css
-Copy
-Edit
 .mentee-edit-profile {
   max-width: 600px;
   margin: 20px auto;
