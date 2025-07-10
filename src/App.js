@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
-import AdminLayout from './components/AdminLayout'; // ✅ import AdminLayout
+import AdminLayout from './components/AdminLayout';
 
+import Home from './pages/Home'; // ✅ imported Home page
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -42,6 +43,7 @@ function App() {
     <Router>
       <Routes>
         {/* Public routes */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
@@ -50,7 +52,6 @@ function App() {
           <Layout role="mentee">
             <MenteeDashboard />
           </Layout>
-
         } />
         <Route path="/mentee/mentors" element={
           <Layout role="mentee">
@@ -82,7 +83,6 @@ function App() {
             <MenteeViewMentors />
           </Layout>
         } />
-        
         <Route path="/mentee/profile" element={
           <Layout role="mentee">
             <MenteeProfile />
@@ -189,12 +189,9 @@ function App() {
             <EditProfile />
           </Layout>
         } />
-
-        <Route path="/" element={<h1>Home Page</h1>} />
       </Routes>
     </Router>
   );
 }
 
 export default App;
-
