@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import {API_BASE_URL} from "../config/api";
 
 function Sidebar() {
   const [user, setUser] = useState(null);
@@ -9,7 +10,7 @@ function Sidebar() {
     const fetchUser = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/users/me', {
+        const res = await axios.get(`&{API_BASE_URL}/users/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setUser(res.data);
