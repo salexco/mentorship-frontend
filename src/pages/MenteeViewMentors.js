@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import { Link } from 'react-router-dom';
 
 function MenteeViewMentors() {
@@ -15,7 +16,7 @@ function MenteeViewMentors() {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/mentors', {
+        const res = await axios.get(`${API_BASE_URL}/mentors`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setMentors(res.data);

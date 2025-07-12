@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import { useParams } from 'react-router-dom';
 
 function MentorProfile() {
@@ -13,7 +14,7 @@ function MentorProfile() {
         const token = localStorage.getItem('token');
         console.log('Token:', token);
 
-        const res = await axios.get('http://localhost:5000/mentors/' + id, {
+        const res = await axios.get(`${API_BASE_URL}/mentors/` + id, {
           headers: { Authorization: 'Bearer ' + token }
         });
 

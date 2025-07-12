@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeRequests() {
   const [requests, setRequests] = useState([]);
@@ -11,7 +12,7 @@ function MenteeRequests() {
         const token = localStorage.getItem('token');
         console.log('Token in localStorage:', token);
 
-        const res = await axios.get('http://localhost:5000/requests/my-requests', {
+        const res = await axios.get(`${API_BASE_URL}/requests/my-requests`, {
           headers: {
             Authorization: 'Bearer ' + token
           }

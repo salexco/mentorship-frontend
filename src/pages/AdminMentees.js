@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminMentees() {
   const [mentees, setMentees] = useState([]);
@@ -9,7 +10,7 @@ function AdminMentees() {
     const fetchMentees = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/mentees', {
+        const res = await axios.get(`${API_BASE_URL}/admin/mentees`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setMentees(res.data);

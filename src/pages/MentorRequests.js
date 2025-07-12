@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MentorRequests() {
   const [requests, setRequests] = useState([]);
@@ -11,7 +12,7 @@ function MentorRequests() {
         const token = localStorage.getItem('token');
         console.log("Token:", token);
 
-        const res = await axios.get('http://localhost:5000/requests/mentor-requests', {
+        const res = await axios.get(`${API_BASE_URL}/requests/mentor-requests`, {
           headers: { Authorization: 'Bearer ' + token }
         });
 
@@ -31,7 +32,7 @@ function MentorRequests() {
       const token = localStorage.getItem('token');
 
       const res = await axios.put(
-        'http://localhost:5000/requests/' + id + '/' + action,
+        `${API_BASE_URL}/requests/` + id + '/' + action,
         {},
         { headers: { Authorization: 'Bearer ' + token } }
       );

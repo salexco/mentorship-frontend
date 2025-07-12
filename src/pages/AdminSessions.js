@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminSessions() {
   const [sessions, setSessions] = useState([]);
@@ -9,7 +10,7 @@ function AdminSessions() {
     const fetchSessions = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/sessions', {
+        const res = await axios.get(`${API_BASE_URL}/admin/sessions`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setSessions(res.data);

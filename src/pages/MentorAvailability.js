@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MentorAvailability() {
   const [availabilities, setAvailabilities] = useState([]);
@@ -11,7 +12,7 @@ function MentorAvailability() {
     const fetchAvailability = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/availability', {
+        const res = await axios.get(`${API_BASE_URL}/availability`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setAvailabilities(res.data);
@@ -28,7 +29,7 @@ function MentorAvailability() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/availability', {
+      const res = await axios.post(`${API_BASE_URL}/availability`, {
         day,
         slots: slots.split(',').map(s => s.trim())
       }, {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeFeedback() {
   const [sessionId, setSessionId] = useState('');
@@ -11,7 +12,7 @@ function MenteeFeedback() {
     try {
       const token = localStorage.getItem('token');
 
-      const res = await axios.put('http://localhost:5000/sessions/' + sessionId + '/feedback', 
+      const res = await axios.put(`${API_BASE_URL}/sessions/` + sessionId + '/feedback', 
         { feedback: feedback, rating: rating }, 
         { headers: { Authorization: 'Bearer ' + token } }
       );

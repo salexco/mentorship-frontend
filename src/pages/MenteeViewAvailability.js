@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import { useParams } from 'react-router-dom';
 
 function MenteeViewAvailability() {
@@ -11,7 +12,7 @@ function MenteeViewAvailability() {
   useEffect(() => {
     const fetchMentor = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/mentors/${id}`);
+        const res = await axios.get(`${API_BASE_URL}/${id}`);
         setMentor(res.data);
         // Assume res.data.availability is array of slots
         setSlots(res.data.availability || []);
@@ -31,7 +32,7 @@ function MenteeViewAvailability() {
     }
 
     try {
-      const res = await axios.post('http://localhost:5000/sessions/book', {
+      const res = await axios.post(`${API_BASE_URL}/sessions/book`, {
         mentorId: id,
         time: slot
       }, {

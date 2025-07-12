@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 
@@ -7,11 +8,15 @@ function MenteeMentors() {
   const [mentors, setMentors] = useState([]);
   const [message, setMessage] = useState('');
 
+  // Define default day and slot as constants for now
+  const day = 'Monday'; // default day for testing
+  const slot = '10AM-11AM'; // default slot for testing
+
   useEffect(() => {
     const fetchMentors = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/mentors', {
+        const res = await axios.get(`${API_BASE_URL}/mentors`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setMentors(res.data);
@@ -28,7 +33,7 @@ function MenteeMentors() {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await axios.post('http://localhost:5000/requests', {
+      const res = await axios.post(`${API_BASE_URL}/requests`, {
         mentorId,
         message: 'I would like to be your mentee.'
       }, {
@@ -47,7 +52,11 @@ function MenteeMentors() {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await axios.post(`http://localhost:5000/sessions/book/${mentorId}`, {}, {
+      const res = await axios.post(`${API_BASE_URL}/sessions`, {
+        mentorId,
+        date: day,  // using default "Monday" for now
+        time: slot  // using default "10AM-11AM" for now
+      }, {
         headers: { Authorization: 'Bearer ' + token }
       });
 

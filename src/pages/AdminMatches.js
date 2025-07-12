@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminMatches() {
   const [matches, setMatches] = useState([]);
@@ -9,7 +10,7 @@ function AdminMatches() {
     const fetchMatches = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/matches', {
+        const res = await axios.get(`${API_BASE_URL}/admin/matches`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setMatches(res.data);

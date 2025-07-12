@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeBooking() {
   const [mentors, setMentors] = useState([]);
@@ -9,26 +10,28 @@ function MenteeBooking() {
   const [slot, setSlot] = useState('');
   const [message, setMessage] = useState('');
 
+  // Fetch mentors when component mounts
   useEffect(() => {
     const fetchMentors = async () => {
-  try {
-    const token = localStorage.getItem('token');
-    const res = await axios.get('http://localhost:5000/mentors', {
-      headers: { Authorization: 'Bearer ' + token }
-    });
-    console.log('Fetched mentors:', res.data);
-    setMentors(res.data);
-  } catch (err) {
-    console.error('Error fetching mentors:', err);
-  }
-};
+      try {
+        const token = localStorage.getItem('token');
+        const res = await axios.get(`${API_BASE_URL}/mentors`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+        console.log('Fetched mentors:', res.data);
+        setMentors(res.data);
+      } catch (err) {
+        console.error('Error fetching mentors:', err);
+      }
+    };
     fetchMentors();
   }, []);
 
+  // Fetch mentor availability
   const fetchAvailability = async (mentorId) => {
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.get('http://localhost:5000/availability/' + mentorId, {
+      const res = await axios.get(`${API_BASE_URL}/availability/` + mentorId, {
         headers: { Authorization: 'Bearer ' + token }
       });
       setAvailability(res.data);
@@ -37,17 +40,32 @@ function MenteeBooking() {
     }
   };
 
-  const handleBook = async (e) => {
-    e.preventDefault();
+  // Handle booking a session
+  const handleBook = async () => {
+    console.log("Book Session button clicked");
+    console.log("Selected Mentor:", selectedMentor);
+    console.log("Day (date):", day);
+    console.log("Slot (time):", slot);
+
+    if (!selectedMentor || !day || !slot) {
+      setMessage('Please select mentor, day, and slot.');
+      console.log("Booking aborted due to missing data");
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
-     await axios.post('http://localhost:5000/sessions/book', {
+      console.log("Token:", token);
+
+      const res = await axios.post(`${API_BASE_URL}/sessions`, {
         mentorId: selectedMentor,
-        day,
-        slot
+        date: day,   // ✅ backend expects "date"
+        time: slot   // ✅ backend expects "time"
       }, {
         headers: { Authorization: 'Bearer ' + token }
       });
+
+      console.log("Booking response:", res.data);
       setMessage('Session booked successfully!');
     } catch (err) {
       console.error('Error booking session:', err.response ? err.response.data : err.message);
@@ -74,7 +92,7 @@ function MenteeBooking() {
       </div>
 
       {availability.length > 0 && (
-        <form onSubmit={handleBook}>
+        <div>
           <div>
             <label>Day:</label><br/>
             <select value={day} onChange={e => setDay(e.target.value)} required>
@@ -95,11 +113,13 @@ function MenteeBooking() {
             </select>
           </div>
 
-          <button type="submit">Book Session</button>
-        </form>
+          {/* ✅ Book Session button with onClick */}
+          <button onClick={handleBook}>Book Session</button>
+        </div>
       )}
     </div>
   );
 }
 
 export default MenteeBooking;
+

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminMentors() {
   const [mentors, setMentors] = useState([]);
@@ -9,7 +10,7 @@ function AdminMentors() {
     const fetchMentors = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/mentors', {
+        const res = await axios.get(`${API_BASE_URL}/admin/mentors`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setMentors(res.data);

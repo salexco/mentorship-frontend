@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeEditProfile() {
   const [form, setForm] = useState({ name: '', bio: '', goals: '' });
@@ -14,7 +15,7 @@ function MenteeEditProfile() {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/mentees/me', {
+        const res = await axios.get(`${API_BASE_URL}/mentees/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setForm({
@@ -40,7 +41,7 @@ function MenteeEditProfile() {
     }
 
     try {
-      const res = await axios.put('http://localhost:5000/mentees/profile', form, {
+      const res = await axios.put(`${API_BASE_URL}/mentees/profile`, form, {
         headers: { Authorization: 'Bearer ' + token }
       });
       setMessage('Profile updated successfully');

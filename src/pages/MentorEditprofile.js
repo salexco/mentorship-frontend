@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MentorEditProfile() {
   const [form, setForm] = useState({ name: '', bio: '', skills: '', goals: '' });
@@ -14,7 +15,7 @@ function MentorEditProfile() {
       }
 
       try {
-        const res = await axios.get('http://localhost:5000/mentors/me', {
+        const res = await axios.get(`${API_BASE_URL}/mentors/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setForm({
@@ -41,7 +42,7 @@ function MentorEditProfile() {
     }
 
     try {
-      const res = await axios.put('http://localhost:5000/mentors/profile', {
+      const res = await axios.put(`${API_BASE_URL}/mentors/profile`, {
         ...form,
         skills: form.skills.split(',').map(s => s.trim())
       }, {
