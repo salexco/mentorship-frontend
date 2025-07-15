@@ -1,25 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { getCurrentUser } from '../config/api'; // import your api.js getCurrentUser function
 
 function Layout({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const userJson = localStorage.getItem('user');
-      if (userJson) {
-        const parsed = JSON.parse(userJson);
-        setUser(parsed);
+    const fetchUser = async () => {
+      try {
+        // ✅ Option 1: Load from localStorage (current setup)
+        const userJson = localStorage.getItem('user');
+        if (userJson) {
+          const parsed = JSON.parse(userJson);
+          setUser(parsed);
+        }
+
+        // ✅ Option 2 (recommended): Validate token with backend
+        const backendUser = await getCurrentUser(); // calls /auth/me
+        setUser(backendUser);
+      } catch (err) {
+        console.error('Error fetching user:', err);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Invalid user JSON in localStorage:', err);
-    }
+    };
+
+    fetchUser();
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  if (loading) {
+    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading...</div>;
+  }
 
   if (!user) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <p>User not found. Please <a href="/login">login again</a>.</p>
+        <p>User not found or session expired. Please <Link to="/login">login again</Link>.</p>
       </div>
     );
   }
@@ -64,12 +90,6 @@ function Layout({ children }) {
       </main>
     </div>
   );
-}
-
-function handleLogout() {
-  localStorage.removeItem('user');
-  localStorage.removeItem('token');
-  window.location.href = '/login';
 }
 
 const styles = {

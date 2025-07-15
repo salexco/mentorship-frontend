@@ -1,7 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
   return (
     <nav style={{
       display: 'flex',
@@ -16,6 +24,7 @@ function Navbar() {
       <Link to="/register">
         <button>Register</button>
       </Link>
+      <button onClick={handleLogout}>Logout</button>
     </nav>
   );
 }

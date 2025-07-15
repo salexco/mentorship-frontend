@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import API_BASE_URL from "../config/api";
+import api from '../config/api'; // ✅ import your configured axios instance
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -13,10 +12,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await axios.post(`${API_BASE_URL}/auth/login`, {
-        email,
-        password
-      });
+      const res = await api.post('/auth/login', { email, password }); // ✅ use axios instance
 
       const { token, user } = res.data;
 
@@ -40,7 +36,11 @@ function Login() {
     } catch (err) {
       console.error('Login error:', err);
       const backendMessage = err.response?.data?.message;
-      setMessage(backendMessage ? 'Login failed: ' + backendMessage : 'Login failed: ' + err.message);
+      setMessage(
+        backendMessage
+          ? 'Login failed: ' + backendMessage
+          : 'Login failed: ' + err.message
+      );
     }
   };
 
