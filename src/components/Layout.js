@@ -1,39 +1,64 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import API_BASE_URL from '../config/api';
 
 function Layout({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    try {
-      const userJson = localStorage.getItem('user');
-      if (userJson) {
-        const parsed = JSON.parse(userJson);
-        setUser(parsed);
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
       }
-    } catch (err) {
-      console.error('Invalid user JSON in localStorage:', err);
-    }
-  }, []);
+
+      try {
+        const res = await axios.get(`${API_BASE_URL}/auth/me`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+
+        setUser(res.data);
+      } catch (err) {
+        console.error('Error fetching user:', err.response ? err.response.data : err.message);
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
+
+  if (loading) return <p>Loading user...</p>;
 
   if (!user) {
     return (
       <div style={{ textAlign: 'center', marginTop: '50px' }}>
-        <p>User not found. Please <a href="/login">login again</a>.</p>
+        <p>User not found or session expired. Please <Link to="/login">login again</Link>.</p>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
-      <aside style={styles.sidebar}>
-        <div style={styles.userInfo}>
-          <h3>{user.name}</h3>
-          <p style={{ fontSize: '0.9em' }}>Role: {user.role}</p>
-        </div>
+    <div className="layout" style={{ display: 'flex', minHeight: '100vh' }}>
+      <aside style={{ width: '220px', background: '#2c3e50', color: '#fff', padding: '20px 10px' }}>
+        <h3>{user.name}</h3>
+        <p><strong>Role:</strong> {user.role}</p>
 
         <nav>
-          <ul style={styles.navList}>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
             {user.role === 'mentor' && (
               <>
                 <li><Link to="/mentor/dashboard" style={styles.link}>Dashboard</Link></li>
@@ -59,38 +84,14 @@ function Layout({ children }) {
         <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
       </aside>
 
-      <main style={styles.main}>
+      <main style={{ flex: 1, padding: '30px', background: '#ecf0f1' }}>
         {children}
       </main>
     </div>
   );
 }
 
-function handleLogout() {
-  localStorage.removeItem('user');
-  localStorage.removeItem('token');
-  window.location.href = '/login';
-}
-
 const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    flexDirection: 'row',
-  },
-  sidebar: {
-    width: '220px',
-    background: '#2c3e50',
-    color: '#fff',
-    padding: '20px 10px',
-  },
-  userInfo: {
-    marginBottom: '30px',
-  },
-  navList: {
-    listStyle: 'none',
-    padding: 0,
-  },
   link: {
     display: 'block',
     padding: '10px 15px',
@@ -108,11 +109,6 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
   },
-  main: {
-    flex: 1,
-    padding: '30px',
-    background: '#ecf0f1',
-  }
 };
 
 export default Layout;

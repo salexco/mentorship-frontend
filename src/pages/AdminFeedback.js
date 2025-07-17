@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminFeedback() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -9,7 +10,7 @@ function AdminFeedback() {
     const fetchFeedback = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/feedback', {
+        const res = await axios.get(`${API_BASE_URL}/admin/feedback`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setFeedbacks(res.data);

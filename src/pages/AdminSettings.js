@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminSettings() {
   const [key, setKey] = useState('');
@@ -11,7 +12,7 @@ function AdminSettings() {
     const token = localStorage.getItem('token');
 
     try {
-      await axios.post('http://localhost:5000/admin/settings', { key, value }, {
+      await axios.post(`${API_BASE_URL}/admin/settings`, { key, value }, {
         headers: { Authorization: 'Bearer ' + token }
       });
       setMessage('Setting updated successfully');

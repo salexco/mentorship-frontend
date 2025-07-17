@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function EditProfile() {
   const [name, setName] = useState('');
@@ -11,7 +12,7 @@ function EditProfile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/mentor/me', {
+        const res = await axios.get(`${API_BASE_URL}/mentor/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setName(res.data.name);
@@ -27,7 +28,7 @@ function EditProfile() {
     e.preventDefault();
     try {
       const token = localStorage.getItem('token');
-      const res = await axios.put('http://localhost:5000/mentor/update-profile', {
+      const res = await axios.put(`${API_BASE_URL}/mentor/update-profile`, {
         name,
         bio
       }, {

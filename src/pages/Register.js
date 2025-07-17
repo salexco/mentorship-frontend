@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import API_BASE_URL from "../config/api";
 function Register() {
   const [name, setName] = useState(''); // added name state
   const [email, setEmail] = useState('');
@@ -13,7 +13,7 @@ function Register() {
 
     try {
       // Call your backend register API
-      const res = await axios.post('http://localhost:5000/auth/register', {
+      const res = await axios.post(`${API_BASE_URL}/auth/register`, {
         name,    // include name in request
         email,
         password,

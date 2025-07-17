@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeDashboard() {
   const [profile, setProfile] = useState({});
@@ -16,10 +17,10 @@ function MenteeDashboard() {
 
       try {
         const [profileRes, sessionsRes] = await Promise.all([
-          axios.get('http://localhost:5000/mentees/me', {
+          axios.get(`${API_BASE_URL}/mentees/me`, {
             headers: { Authorization: 'Bearer ' + token }
           }),
-          axios.get('http://localhost:5000/mentees/sessions', {
+          axios.get(`${API_BASE_URL}/mentees/sessions`, {
             headers: { Authorization: 'Bearer ' + token }
           })
         ]);

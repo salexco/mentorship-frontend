@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MenteeProfile() {
   const [profile, setProfile] = useState({
@@ -14,7 +15,7 @@ function MenteeProfile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5000/users/me', {
+        const res = await axios.get(`${API_BASE_URL}/users/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setProfile({
@@ -40,7 +41,7 @@ function MenteeProfile() {
     try {
       const token = localStorage.getItem('token');
       console.log('Token used:', token);
-      const res = await axios.put('http://localhost:5000/users/me', {
+      const res = await axios.put(`${API_BASE_URL}/users/me`, {
         ...profile,
         skills: profile.skills.split(',').map(s => s.trim())
       }, {

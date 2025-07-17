@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function MentorComment({ menteeId }) {
   const [text, setText] = useState('');
@@ -10,7 +11,7 @@ function MentorComment({ menteeId }) {
     const token = localStorage.getItem('token');
 
     try {
-      const res = await axios.post('http://localhost:5000/comments', {
+      const res = await axios.post(`${API_BASE_URL}/comments`, {
         menteeId,
         text
       }, {

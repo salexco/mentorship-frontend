@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 
 function AdminProfile() {
   const [profile, setProfile] = useState({ name: '', email: '' });
@@ -9,7 +10,7 @@ function AdminProfile() {
     const fetchProfile = async () => {
       const token = localStorage.getItem('token');
       try {
-        const res = await axios.get('http://localhost:5000/admin/profile', {
+        const res = await axios.get(`${API_BASE_URL}/admin/profile`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setProfile({ name: res.data.name, email: res.data.email });
@@ -25,7 +26,7 @@ function AdminProfile() {
     e.preventDefault();
     const token = localStorage.getItem('token');
     try {
-      const res = await axios.put('http://localhost:5000/admin/profile', profile, {
+      const res = await axios.put(`${API_BASE_URL}/admin/profile`, profile, {
         headers: { Authorization: 'Bearer ' + token }
       });
       setMessage('Profile updated successfully');

@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import AdminLayout from './components/AdminLayout';
 
-import Home from './pages/Home'; // ✅ imported Home page
+import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
@@ -38,160 +38,73 @@ import AdminMatches from './pages/AdminMatches';
 
 import EditProfile from './pages/EditProfile';
 
+// ✅ Optional: Global Error Boundary component
+function ErrorBoundary({ children }) {
+  return (
+    <React.Suspense fallback={<div>Loading...</div>}>
+      {children}
+    </React.Suspense>
+  );
+}
+
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      <ErrorBoundary>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
-        {/* Mentee routes */}
-        <Route path="/mentee/dashboard" element={
-          <Layout role="mentee">
-            <MenteeDashboard />
-          </Layout>
-        } />
-        <Route path="/mentee/mentors" element={
-          <Layout role="mentee">
-            <MenteeMentors />
-          </Layout>
-        } />
-        <Route path="/mentee/requests" element={
-          <Layout role="mentee">
-            <MenteeRequests />
-          </Layout>
-        } />
-        <Route path="/mentee/sessions" element={
-          <Layout role="mentee">
-            <MenteeSessions />
-          </Layout>
-        } />
-        <Route path="/mentee/book" element={
-          <Layout role="mentee">
-            <MenteeBooking />
-          </Layout>
-        } />
-        <Route path="/mentee/feedback" element={
-          <Layout role="mentee">
-            <MenteeFeedback />
-          </Layout>
-        } />
-        <Route path="/mentee/view/mentor" element={
-          <Layout role="mentee">
-            <MenteeViewMentors />
-          </Layout>
-        } />
-        <Route path="/mentee/profile" element={
-          <Layout role="mentee">
-            <MenteeProfile />
-          </Layout>
-        } />
-        <Route path="/mentee/edit/profile" element={
-          <Layout role="mentee">
-            <MenteeEditProfile />
-          </Layout>
-        } />
-        <Route path="/mentee/mentors/:id/availability" element={
-          <Layout role="mentee">
-            <MenteeViewAvailability />
-          </Layout>
-        } />
+          {/* Mentee routes */}
+          <Route path="/mentee/dashboard" element={<Layout role="mentee"><MenteeDashboard /></Layout>} />
+          <Route path="/mentee/mentors" element={<Layout role="mentee"><MenteeMentors /></Layout>} />
+          <Route path="/mentee/requests" element={<Layout role="mentee"><MenteeRequests /></Layout>} />
+          <Route path="/mentee/sessions" element={<Layout role="mentee"><MenteeSessions /></Layout>} />
+          <Route path="/mentee/book" element={<Layout role="mentee"><MenteeBooking /></Layout>} />
+          <Route path="/mentee/feedback" element={<Layout role="mentee"><MenteeFeedback /></Layout>} />
+          <Route path="/mentee/view/mentor" element={<Layout role="mentee"><MenteeViewMentors /></Layout>} />
+          <Route path="/mentee/profile" element={<Layout role="mentee"><MenteeProfile /></Layout>} />
+          <Route path="/mentee/edit/profile" element={<Layout role="mentee"><MenteeEditProfile /></Layout>} />
+          <Route path="/mentee/mentors/:id/availability" element={<Layout role="mentee"><MenteeViewAvailability /></Layout>} />
 
-        {/* Mentor routes */}
-        <Route path="/mentor/dashboard" element={
-          <Layout role="mentor">
-            <MentorDashboard />
-          </Layout>
-        } />
-        <Route path="/mentor/availability" element={
-          <Layout role="mentor">
-            <MentorAvailability />
-          </Layout>
-        } />
-        <Route path="/mentor/requests" element={
-          <Layout role="mentor">
-            <MentorRequests />
-          </Layout>
-        } />
-        <Route path="/mentor/feedback" element={
-          <Layout role="mentor">
-            <MentorFeedback />
-          </Layout>
-        } />
-        <Route path="/mentor/edit-profile" element={
-          <Layout role="mentor">
-            <MentorEditprofile />
-          </Layout>
-        } />
-        <Route path="/mentor/sessions" element={
-          <Layout role="mentor">
-            <MentorSessions />
-          </Layout>
-        } />
-        <Route path="/mentors/:id" element={
-          <Layout role="mentor">
-            <Mentorprofile />
-          </Layout>
-        } />
+          {/* Mentor routes */}
+          <Route path="/mentor/dashboard" element={<Layout role="mentor"><MentorDashboard /></Layout>} />
+          <Route path="/mentor/availability" element={<Layout role="mentor"><MentorAvailability /></Layout>} />
+          <Route path="/mentor/requests" element={<Layout role="mentor"><MentorRequests /></Layout>} />
+          <Route path="/mentor/feedback" element={<Layout role="mentor"><MentorFeedback /></Layout>} />
+          <Route path="/mentor/edit-profile" element={<Layout role="mentor"><MentorEditprofile /></Layout>} />
+          <Route path="/mentor/sessions" element={<Layout role="mentor"><MentorSessions /></Layout>} />
+          <Route path="/mentors/:id" element={<Layout role="mentor"><Mentorprofile /></Layout>} />
 
-        {/* Admin routes */}
-        <Route path="/admin/dashboard" element={
-          <AdminLayout>
-            <AdminDashboard />
-          </AdminLayout>
-        } />
-        <Route path="/admin/users" element={
-          <AdminLayout>
-            <AdminUsers />
-          </AdminLayout>
-        } />
-        <Route path="/admin/mentors" element={
-          <AdminLayout>
-            <AdminMentors />
-          </AdminLayout>
-        } />
-        <Route path="/admin/mentees" element={
-          <AdminLayout>
-            <AdminMentees />
-          </AdminLayout>
-        } />
-        <Route path="/admin/sessions" element={
-          <AdminLayout>
-            <AdminSessions />
-          </AdminLayout>
-        } />
-        <Route path="/admin/matches" element={
-          <AdminLayout>
-            <AdminMatches />
-          </AdminLayout>
-        } />
-        <Route path="/admin/feedback" element={
-          <AdminLayout>
-            <AdminFeedback />
-          </AdminLayout>
-        } />
-        <Route path="/admin/profile" element={
-          <AdminLayout>
-            <AdminProfile />
-          </AdminLayout>
-        } />
-        <Route path="/admin/settings" element={
-          <AdminLayout>
-            <AdminSettings />
-          </AdminLayout>
-        } />
+          {/* Admin routes */}
+          <Route path="/admin/dashboard" element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+          <Route path="/admin/users" element={<AdminLayout><AdminUsers /></AdminLayout>} />
+          <Route path="/admin/mentors" element={<AdminLayout><AdminMentors /></AdminLayout>} />
+          <Route path="/admin/mentees" element={<AdminLayout><AdminMentees /></AdminLayout>} />
+          <Route path="/admin/sessions" element={<AdminLayout><AdminSessions /></AdminLayout>} />
+          <Route path="/admin/matches" element={<AdminLayout><AdminMatches /></AdminLayout>} />
+          <Route path="/admin/feedback" element={<AdminLayout><AdminFeedback /></AdminLayout>} />
+          <Route path="/admin/profile" element={<AdminLayout><AdminProfile /></AdminLayout>} />
+          <Route path="/admin/settings" element={<AdminLayout><AdminSettings /></AdminLayout>} />
 
-        {/* Other routes */}
-        <Route path="/edit/profile" element={
-          <Layout role="mentee">
-            <EditProfile />
-          </Layout>
-        } />
-      </Routes>
+          {/* Other routes */}
+          <Route path="/edit/profile" element={<Layout role="mentee"><EditProfile /></Layout>} />
+
+          {/* Fallback route for undefined paths */}
+          <Route path="*" element={
+            <div style={{ textAlign: 'center', marginTop: '50px' }}>
+              <h1>404 - Page Not Found</h1>
+              <p>The page you are looking for does not exist.</p>
+              <a href="/">Go back to Home</a>
+            </div>
+          } />
+        </Routes>
+      </ErrorBoundary>
     </Router>
   );
 }
 
 export default App;
+

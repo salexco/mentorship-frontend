@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import Layout from '../components/Layout'; // adjust path if you use Layout globally
 
 function AdminDashboard() {
@@ -15,20 +16,20 @@ function AdminDashboard() {
         console.log('Admin token in localStorage:', token);
 
         // Fetch all users
-        const usersRes = await axios.get('http://localhost:5000/admin/users', {
+        const usersRes = await axios.get(`${API_BASE_URL}/admin/users`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         console.log('Fetched users:', usersRes.data);
         setUsers(usersRes.data);
 
         // Fetch all requests
-        const reqRes = await axios.get('http://localhost:5000/admin/requests', {
+        const reqRes = await axios.get(`${API_BASE_URL}/admin/requests`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setRequests(reqRes.data);
 
         // Fetch all sessions
-        const sesRes = await axios.get('http://localhost:5000/admin/sessions', {
+        const sesRes = await axios.get(`${API_BASE_URL}/admin/sessions`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setSessions(sesRes.data);
@@ -45,7 +46,7 @@ function AdminDashboard() {
   const updateRole = async (id, role) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put('http://localhost:5000/admin/users/' + id + '/role', { role }, {
+      await axios.put(`${API_BASE_URL}/admin/users/` + id + '/role', { role }, {
         headers: { Authorization: 'Bearer ' + token }
       });
       alert('Role updated');

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import API_BASE_URL from "../config/api";
 import Layout from '../components/Layout'; // adjust path if needed
 
 function MentorDashboard() {
@@ -17,13 +18,13 @@ function MentorDashboard() {
 
       try {
         // Fetch mentor requests
-        const reqRes = await axios.get('http://localhost:5000/requests/mentor-requests', {
+        const reqRes = await axios.get(`${API_BASE_URL}/requests/mentor-requests`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setRequests(reqRes.data);
 
         // Fetch mentor sessions
-        const sesRes = await axios.get('http://localhost:5000/sessions/mentor', {
+        const sesRes = await axios.get(`${API_BASE_URL}/sessions/mentor`, {
           headers: { Authorization: 'Bearer ' + token }
         });
         setSessions(sesRes.data);
