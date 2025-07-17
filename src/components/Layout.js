@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import API_BASE_URL from '../config/api';
+import Sidebar from './Sidebar'; // ✅ Import your Sidebar component
 
 function Layout({ children }) {
   const [user, setUser] = useState(null);
@@ -17,13 +18,16 @@ function Layout({ children }) {
       }
 
       try {
+        console.log("🔍 Using API_BASE_URL:", API_BASE_URL);
+
         const res = await axios.get(`${API_BASE_URL}/auth/me`, {
           headers: { Authorization: 'Bearer ' + token }
         });
 
-        setUser(res.data);
+        console.log("✅ Layout fetched user:", res.data);
+        setUser(res.data.user);
       } catch (err) {
-        console.error('Error fetching user:', err.response ? err.response.data : err.message);
+        console.error('❌ Layout fetch error:', err.response ? err.response.data : err.message);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         navigate('/login');
@@ -41,7 +45,7 @@ function Layout({ children }) {
     navigate('/login');
   };
 
-  if (loading) return <p>Loading user...</p>;
+  if (loading) return <p>Loading layout...</p>;
 
   if (!user) {
     return (
@@ -53,53 +57,16 @@ function Layout({ children }) {
 
   return (
     <div className="layout" style={{ display: 'flex', minHeight: '100vh' }}>
-      <aside style={{ width: '220px', background: '#2c3e50', color: '#fff', padding: '20px 10px' }}>
-        <h3>{user.name}</h3>
-        <p><strong>Role:</strong> {user.role}</p>
-
-        <nav>
-          <ul style={{ listStyle: 'none', padding: 0 }}>
-            {user.role === 'mentor' && (
-              <>
-                <li><Link to="/mentor/dashboard" style={styles.link}>Dashboard</Link></li>
-                <li><Link to="/mentor/edit-profile" style={styles.link}>Edit Profile</Link></li>
-                <li><Link to="/mentor/availability" style={styles.link}>Availability</Link></li>
-                <li><Link to="/mentor/requests" style={styles.link}>Requests</Link></li>
-                <li><Link to="/mentor/sessions" style={styles.link}>Sessions</Link></li>
-              </>
-            )}
-
-            {user.role === 'mentee' && (
-              <>
-                <li><Link to="/mentee/dashboard" style={styles.link}>Dashboard</Link></li>
-                <li><Link to="/mentee/mentors" style={styles.link}>Find Mentors</Link></li>
-                <li><Link to="/mentee/requests" style={styles.link}>Requests</Link></li>
-                <li><Link to="/mentee/sessions" style={styles.link}>Sessions</Link></li>
-                <li><Link to="/mentee/profile" style={styles.link}>Profile</Link></li>
-              </>
-            )}
-          </ul>
-        </nav>
-
-        <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
-      </aside>
-
+      <Sidebar /> {/* ✅ Uses your Sidebar component */}
       <main style={{ flex: 1, padding: '30px', background: '#ecf0f1' }}>
         {children}
+        <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
       </main>
     </div>
   );
 }
 
 const styles = {
-  link: {
-    display: 'block',
-    padding: '10px 15px',
-    color: '#ecf0f1',
-    textDecoration: 'none',
-    borderRadius: '4px',
-    marginBottom: '5px',
-  },
   logoutBtn: {
     marginTop: '20px',
     padding: '10px 15px',
