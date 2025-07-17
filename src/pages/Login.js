@@ -1,29 +1,31 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import api from '../config/api'; // ✅ import your configured axios instance
+import axios from 'axios';
+import API_BASE_URL from '../config/api';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setMessage('');
 
     try {
-      const res = await api.post('/auth/login', { email, password }); // ✅ use axios instance
+      const res = await axios.post(`${API_BASE_URL}/auth/login`, { email, password });
 
       const { token, user } = res.data;
 
-      // ✅ Save token and user to localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      setMessage('Login successful!');
-      console.log('User role:', user.role);
+      console.log('Login successful:', user);
 
-      // ✅ Redirect based on role
+      // Redirect based on role
       if (user.role === 'mentee') {
         navigate('/mentee/dashboard');
       } else if (user.role === 'mentor') {
@@ -34,20 +36,20 @@ function Login() {
         navigate('/');
       }
     } catch (err) {
-      console.error('Login error:', err);
+      console.error('Login error:', err.response ? err.response.data : err.message);
       const backendMessage = err.response?.data?.message;
-      setMessage(
-        backendMessage
-          ? 'Login failed: ' + backendMessage
-          : 'Login failed: ' + err.message
-      );
+      setMessage(backendMessage ? `Login failed: ${backendMessage}` : `Login failed: ${err.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div style={{ maxWidth: '400px', margin: '50px auto' }}>
       <h2>Login</h2>
+
       {message && <p>{message}</p>}
+      {loading && <p>Processing...</p>}
 
       <form onSubmit={handleSubmit}>
         <input
@@ -64,7 +66,7 @@ function Login() {
           required
           onChange={(e) => setPassword(e.target.value)}
         /><br />
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>Login</button>
       </form>
 
       <p>Don't have an account?</p>

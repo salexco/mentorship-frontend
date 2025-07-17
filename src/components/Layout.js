@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
-import { getCurrentUser } from '../config/api'; // import your api.js getCurrentUser function
+import API_BASE_URL from '../config/api';
 
 function Layout({ children }) {
   const [user, setUser] = useState(null);
@@ -9,28 +10,30 @@ function Layout({ children }) {
 
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        // ✅ Option 1: Load from localStorage (current setup)
-        const userJson = localStorage.getItem('user');
-        if (userJson) {
-          const parsed = JSON.parse(userJson);
-          setUser(parsed);
-        }
+      const token = localStorage.getItem('token');
+      if (!token) {
+        navigate('/login');
+        return;
+      }
 
-        // ✅ Option 2 (recommended): Validate token with backend
-        const backendUser = await getCurrentUser(); // calls /auth/me
-        setUser(backendUser);
+      try {
+        const res = await axios.get(`${API_BASE_URL}/auth/me`, {
+          headers: { Authorization: 'Bearer ' + token }
+        });
+
+        setUser(res.data);
       } catch (err) {
-        console.error('Error fetching user:', err);
+        console.error('Error fetching user:', err.response ? err.response.data : err.message);
         localStorage.removeItem('user');
         localStorage.removeItem('token');
+        navigate('/login');
       } finally {
         setLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -38,9 +41,7 @@ function Layout({ children }) {
     navigate('/login');
   };
 
-  if (loading) {
-    return <div style={{ textAlign: 'center', marginTop: '50px' }}>Loading...</div>;
-  }
+  if (loading) return <p>Loading user...</p>;
 
   if (!user) {
     return (
@@ -51,15 +52,13 @@ function Layout({ children }) {
   }
 
   return (
-    <div style={styles.container}>
-      <aside style={styles.sidebar}>
-        <div style={styles.userInfo}>
-          <h3>{user.name}</h3>
-          <p style={{ fontSize: '0.9em' }}>Role: {user.role}</p>
-        </div>
+    <div className="layout" style={{ display: 'flex', minHeight: '100vh' }}>
+      <aside style={{ width: '220px', background: '#2c3e50', color: '#fff', padding: '20px 10px' }}>
+        <h3>{user.name}</h3>
+        <p><strong>Role:</strong> {user.role}</p>
 
         <nav>
-          <ul style={styles.navList}>
+          <ul style={{ listStyle: 'none', padding: 0 }}>
             {user.role === 'mentor' && (
               <>
                 <li><Link to="/mentor/dashboard" style={styles.link}>Dashboard</Link></li>
@@ -85,7 +84,7 @@ function Layout({ children }) {
         <button onClick={handleLogout} style={styles.logoutBtn}>Logout</button>
       </aside>
 
-      <main style={styles.main}>
+      <main style={{ flex: 1, padding: '30px', background: '#ecf0f1' }}>
         {children}
       </main>
     </div>
@@ -93,24 +92,6 @@ function Layout({ children }) {
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    minHeight: '100vh',
-    flexDirection: 'row',
-  },
-  sidebar: {
-    width: '220px',
-    background: '#2c3e50',
-    color: '#fff',
-    padding: '20px 10px',
-  },
-  userInfo: {
-    marginBottom: '30px',
-  },
-  navList: {
-    listStyle: 'none',
-    padding: 0,
-  },
   link: {
     display: 'block',
     padding: '10px 15px',
@@ -128,11 +109,6 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
   },
-  main: {
-    flex: 1,
-    padding: '30px',
-    background: '#ecf0f1',
-  }
 };
 
 export default Layout;
